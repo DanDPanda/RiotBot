@@ -1,10 +1,11 @@
 import { sendLoLAPIRequest } from "./utils.js";
 
 const formateTeamToString = teamPlayerList => {
-    let teamInformation;
+    let teamInformation = "";
     teamPlayerList.forEach(teamPlayer => {
-        teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.playerRank}\n`;
+        teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.playerRank}\n\n`;
     });
+
     return teamInformation;
 };
 
