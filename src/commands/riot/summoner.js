@@ -33,7 +33,7 @@ const constructEmbed = (summonerResult, summonerRankedResult) => {
         .setTimestamp()
         .setFooter(
             "All data comes from the Riot API",
-            "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/12/League_of_Legends_Icon.png/revision/latest?cb=20150402234343"
+            "https://cdn-images-1.medium.com/max/1200/1*IOMogY9xupXEg_ndWOb_4A.png"
         );
     return message;
 };
@@ -45,9 +45,18 @@ export const summoner = async (message, client) => {
     const summonerResult = await sendLoLAPIRequest(
         `summoner/v4/summoners/by-name/${summonerNameQueryParam}`
     );
+
+    if (!summonerResult) {
+        return;
+    }
+
     const summonerRankedResult = await sendLoLAPIRequest(
         `league/v4/entries/by-summoner/${summonerResult.id}`
     );
+
+    if (!summonerRankedResult) {
+        return;
+    }
 
     return constructEmbed(summonerResult, summonerRankedResult);
 };

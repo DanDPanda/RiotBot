@@ -29,7 +29,7 @@ const constructEmbed = twoTeams => ({
         timestamp: new Date(),
         footer: {
             icon_url:
-                "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/12/League_of_Legends_Icon.png/revision/latest?cb=20150402234343",
+                "https://cdn-images-1.medium.com/max/1200/1*IOMogY9xupXEg_ndWOb_4A.png",
             text: "All data comes from the Riot API"
         }
     }
@@ -52,12 +52,17 @@ export const match = async (message, client) => {
     const summonerResult = await sendLoLAPIRequest(
         `summoner/v4/summoners/by-name/${summonerNameQueryParam}`
     );
+
+    if (!summonerResult) {
+        return;
+    }
+
     const { participants } = await sendLoLAPIRequest(
         `spectator/v4/active-games/by-summoner/${summonerResult.id}`
     );
 
     if (!participants) {
-        return null;
+        return;
     }
 
     let playerRankedList = [];
