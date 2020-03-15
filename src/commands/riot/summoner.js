@@ -32,7 +32,7 @@ const constructEmbed = (summonerResult, summonerRankedResult) => {
         .addField("Ranked Flex Wins", `${summonerRankedResult[0].wins}`, true)
         .setTimestamp()
         .setFooter(
-            "All data comes from the Riot API",
+            "All data derived from the Riot Games API",
             "https://cdn-images-1.medium.com/max/1200/1*IOMogY9xupXEg_ndWOb_4A.png"
         );
     return message;

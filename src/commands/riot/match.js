@@ -16,10 +16,10 @@ const formatTeamsToFields = twoTeams =>
         inline: true
     }));
 
-const constructEmbed = twoTeams => ({
+const constructEmbed = (summonerResult, twoTeams) => ({
     embed: {
         color: 3447003,
-        title: "Match Stats",
+        title: `${summonerResult.name}'s Match`,
         author: {
             name: "League of Legends",
             icon_url:
@@ -30,7 +30,7 @@ const constructEmbed = twoTeams => ({
         footer: {
             icon_url:
                 "https://cdn-images-1.medium.com/max/1200/1*IOMogY9xupXEg_ndWOb_4A.png",
-            text: "All data comes from the Riot API"
+            text: "All data derived from the Riot Games API"
         }
     }
 });
@@ -87,5 +87,5 @@ export const match = async (message, client) => {
     }
 
     const twoTeams = splitIntoTeams(playerRankedList);
-    return constructEmbed(twoTeams);
+    return constructEmbed(summonerResult, twoTeams);
 };
