@@ -12,3 +12,13 @@ export const sendLoLAPIRequest = async url => {
     const json = await response.json();
     return json;
 };
+
+export const getChampions = async () => {
+    const response = await fetch(
+        "http://ddragon.leagueoflegends.com/cdn/10.6.1/data/en_US/champion.json"
+    );
+
+    const json = await response.json();
+
+    return json.data;
+};

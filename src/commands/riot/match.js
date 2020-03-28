@@ -1,9 +1,14 @@
-import { sendLoLAPIRequest } from "./utils.js";
+import { sendLoLAPIRequest, getChampions } from "./utils.js";
+
+const getChampionNameFromChampionId = (champions, championId) =>
+    Object.keys(champions).find(
+        champion => champions[champion].key == championId
+    );
 
 const formateTeamToString = teamPlayerList => {
     let teamInformation = "";
     teamPlayerList.forEach(teamPlayer => {
-        teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.playerRank}\n\n`;
+        teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.championName} - ${teamPlayer.playerRank}\n\n`;
     });
 
     return teamInformation;
@@ -49,10 +54,10 @@ export const match = async (message, client) => {
     const messageArray = message.content.split(" ");
     const summonerName = messageArray.slice(1);
     const summonerNameQueryParam = summonerName.join("%20");
+
     const summonerResult = await sendLoLAPIRequest(
         `summoner/v4/summoners/by-name/${summonerNameQueryParam}`
     );
-
     if (!summonerResult) {
         return;
     }
@@ -60,31 +65,38 @@ export const match = async (message, client) => {
     const { participants } = await sendLoLAPIRequest(
         `spectator/v4/active-games/by-summoner/${summonerResult.id}`
     );
-
     if (!participants) {
         return;
     }
 
-    let playerRankedList = [];
+    const champions = await getChampions();
 
-    for await (const { summonerId, summonerName, teamId } of participants) {
-        let playerRank = "unranked";
-        const summonerRankedResult = await sendLoLAPIRequest(
-            `league/v4/entries/by-summoner/${summonerId}`
-        );
+    const playerRankedList = await Promise.all(
+        participants.map(
+            async ({ summonerId, summonerName, teamId, championId }) => {
+                let playerRank = "unranked";
+                const summonerRankedResult = await sendLoLAPIRequest(
+                    `league/v4/entries/by-summoner/${summonerId}`
+                );
 
-        summonerRankedResult.forEach(result => {
-            if (result.queueType === "RANKED_SOLO_5x5") {
-                playerRank = `${result.tier} ${result.rank}`;
+                summonerRankedResult.forEach(result => {
+                    if (result.queueType === "RANKED_SOLO_5x5") {
+                        playerRank = `${result.tier} ${result.rank}`;
+                    }
+                });
+
+                return {
+                    summonerName,
+                    playerRank,
+                    teamId,
+                    championName: getChampionNameFromChampionId(
+                        champions,
+                        championId
+                    )
+                };
             }
-        });
-
-        playerRankedList.push({
-            summonerName,
-            playerRank,
-            teamId
-        });
-    }
+        )
+    );
 
     const twoTeams = splitIntoTeams(playerRankedList);
     return constructEmbed(summonerResult, twoTeams);
