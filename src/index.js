@@ -7,7 +7,9 @@ import { commandList } from "./command-list.js";
 
 // Attemps to connect to Discord
 try {
-    client.login(process.env.DISCORD);
+    process.env.NODE_ENV === "DEV"
+        ? client.login(process.env.DISCORD_DEV)
+        : client.login(process.env.DISCORD_PROD);
 } catch (e) {
     console.log("Discord is down");
 }
@@ -15,7 +17,6 @@ try {
 // Message the client displays when ready
 client.on("ready", () => {
     console.log("Bot Online");
-    client.user.setActivity("Disney+", { type: "WATCHING" });
 });
 
 // This reads the message and sends the appropriate command
