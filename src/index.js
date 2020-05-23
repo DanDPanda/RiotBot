@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { commandList } from "./command-list.js";
+import { cronJobs } from "./cron-jobs.js";
 
 // Attemps to connect to Discord
 try {
@@ -17,10 +18,11 @@ try {
 // Message the client displays when ready
 client.on("ready", () => {
     console.log("Bot Online");
+    cronJobs(client);
 });
 
 // This reads the message and sends the appropriate command
-client.on("message", async message => {
+client.on("message", async (message) => {
     const commandName = message.content.split(" ")[0];
     const commandFunction = commandList[commandName];
 
