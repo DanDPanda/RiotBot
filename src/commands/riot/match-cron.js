@@ -1,5 +1,5 @@
 import { sendLoLAPIRequest, getChampions } from "./utils.js";
-import { changeRiotMatchCheckerInGameStatus } from "./riot-repository.js";
+import { changeRiotMatchCheckerInGameStatus } from "../../repository/riot-repository.js";
 
 const getChampionNameFromChampionId = (champions, championId) =>
     Object.keys(champions).find(
@@ -58,6 +58,7 @@ export const lolMatchChecker = async (
     lolName,
     inGame
 ) => {
+    console.log("in");
     const summonerResult = await sendLoLAPIRequest(
         `summoner/v4/summoners/by-name/${lolName}`
     );
@@ -86,9 +87,15 @@ export const lolMatchChecker = async (
         participants.map(
             async ({ summonerId, summonerName, teamId, championId }) => {
                 let playerRank = "unranked";
+
+                console.log("summonerId :>> ", summonerId);
+                console.log("summonerName :>> ", summonerName);
+
                 const summonerRankedResult = await sendLoLAPIRequest(
                     `league/v4/entries/by-summoner/${summonerId}`
                 );
+
+                console.log("summonerRankedResult :>> ", summonerRankedResult);
 
                 summonerRankedResult.forEach((result) => {
                     if (result.queueType === "RANKED_SOLO_5x5") {
