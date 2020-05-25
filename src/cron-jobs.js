@@ -8,10 +8,19 @@ export const cronJobs = (client) => {
         const jsonData = fs.readFileSync("./src/data/riot-match-checker.json");
         const riotMatchList = JSON.parse(jsonData);
 
-        riotMatchList.users.forEach(({ discordId, lolName, inGame }, index) => {
-            setTimeout(() => {
-                lolMatchChecker(client, fs, discordId, lolName, inGame);
-            }, 5000 * index);
-        });
+        riotMatchList.users.forEach(
+            ({ discordId, lolName, inGame, region }, index) => {
+                setTimeout(() => {
+                    lolMatchChecker(
+                        client,
+                        fs,
+                        discordId,
+                        lolName,
+                        inGame,
+                        region
+                    );
+                }, 5000 * index);
+            }
+        );
     });
 };

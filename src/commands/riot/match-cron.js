@@ -56,16 +56,18 @@ export const lolMatchChecker = async (
     fs,
     discordId,
     lolName,
-    inGame
+    inGame,
+    region
 ) => {
-    console.log("in");
     const summonerResult = await sendLoLAPIRequest(
-        `summoner/v4/summoners/by-name/${lolName}`
+        `summoner/v4/summoners/by-name/${lolName}`,
+        region
     );
     if (!summonerResult.id) return;
 
     const { participants } = await sendLoLAPIRequest(
-        `spectator/v4/active-games/by-summoner/${summonerResult.id}`
+        `spectator/v4/active-games/by-summoner/${summonerResult.id}`,
+        region
     );
     if (!participants) {
         if (inGame) {
@@ -88,14 +90,10 @@ export const lolMatchChecker = async (
             async ({ summonerId, summonerName, teamId, championId }) => {
                 let playerRank = "unranked";
 
-                console.log("summonerId :>> ", summonerId);
-                console.log("summonerName :>> ", summonerName);
-
                 const summonerRankedResult = await sendLoLAPIRequest(
-                    `league/v4/entries/by-summoner/${summonerId}`
+                    `league/v4/entries/by-summoner/${summonerId}`,
+                    region
                 );
-
-                console.log("summonerRankedResult :>> ", summonerRankedResult);
 
                 summonerRankedResult.forEach((result) => {
                     if (result.queueType === "RANKED_SOLO_5x5") {
