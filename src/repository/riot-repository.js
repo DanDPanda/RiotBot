@@ -1,3 +1,40 @@
+import fetch from "node-fetch";
+import dotenv from "dotenv";
+dotenv.config();
+
+const sendLoLAPIRequest = async (url, region = "na1") => {
+    const response = await fetch(
+        `https://${region}.api.riotgames.com/lol/${url}`,
+        {
+            method: "get",
+            headers: {
+                "X-Riot-Token": process.env.RIOT_API_KEY,
+            },
+        }
+    );
+    const json = await response.json();
+    return json;
+};
+
+export const selectSummoner = (lolName, region) =>
+    sendLoLAPIRequest(`summoner/v4/summoners/by-name/${lolName}`, region);
+
+export const selectActiveGame = ({ id }, region) =>
+    sendLoLAPIRequest(`spectator/v4/active-games/by-summoner/${id}`, region);
+
+export const selectPlayerRanks = (id, region) =>
+    sendLoLAPIRequest(`league/v4/entries/by-summoner/${id}`, region);
+
+export const getChampions = async () => {
+    const response = await fetch(
+        "http://ddragon.leagueoflegends.com/cdn/10.6.1/data/en_US/champion.json"
+    );
+
+    const json = await response.json();
+
+    return json.data;
+};
+
 export const changeRiotMatchCheckerInGameStatus = (fs, lolName, inGame) => {
     const jsonData = fs.readFileSync("./src/data/riot-match-checker.json");
     const riotMatchList = JSON.parse(jsonData);

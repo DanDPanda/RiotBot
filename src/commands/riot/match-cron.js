@@ -1,10 +1,10 @@
 import { sendLoLAPIRequest, getChampions } from "./utils.js";
-import { changeRiotMatchCheckerInGameStatus } from "../../repository/riot-repository.js";
-
-const getChampionNameFromChampionId = (champions, championId) =>
-    Object.keys(champions).find(
-        (champion) => champions[champion].key == championId
-    );
+import {
+    checkInGameStatus,
+    getSummonerBySummonerName,
+    getActiveGameBySummonerId,
+    getPlayerRanks,
+} from "../../service/riot-service.js";
 
 const formateTeamToString = (teamPlayerList) => {
     let teamInformation = "";
@@ -22,10 +22,10 @@ const formatTeamsToFields = (twoTeams) =>
         inline: true,
     }));
 
-const constructEmbed = (summonerResult, twoTeams) => ({
+const constructEmbed = (summoner, twoTeams) => ({
     embed: {
         color: 3447003,
-        title: `${summonerResult.name}'s Match`,
+        title: `${summoner.name}'s Match`,
         author: {
             name: "League of Legends",
             icon_url:
@@ -41,8 +41,8 @@ const constructEmbed = (summonerResult, twoTeams) => ({
     },
 });
 
-const splitIntoTeams = (playerRankedList) =>
-    playerRankedList.reduce(
+const splitIntoTeams = (playerRankList) =>
+    playerRankList.reduce(
         ([teamOne, teamTwo], player) => {
             return player.teamId === 100
                 ? [[...teamOne, player], teamTwo]
@@ -51,71 +51,20 @@ const splitIntoTeams = (playerRankedList) =>
         [[], []]
     );
 
-export const lolMatchChecker = async (
-    client,
-    fs,
-    discordId,
-    lolName,
-    inGame,
-    region
-) => {
-    const summonerResult = await sendLoLAPIRequest(
-        `summoner/v4/summoners/by-name/${lolName}`,
-        region
-    );
-    if (!summonerResult.id) return;
+export const lolMatchChecker = async (client, fs, riotMatch) => {
+    const { discordId, lolName, region } = riotMatch;
 
-    const { participants } = await sendLoLAPIRequest(
-        `spectator/v4/active-games/by-summoner/${summonerResult.id}`,
-        region
-    );
-    if (!participants) {
-        if (inGame) {
-            changeRiotMatchCheckerInGameStatus(fs, lolName, inGame);
-        }
+    const summoner = await getSummonerBySummonerName(lolName, region);
+    if (!summoner.id) return;
 
-        return;
-    } else {
-        if (inGame) {
-            return;
-        }
+    const { participants } = await getActiveGameBySummonerId(summoner, region);
+    const sendMessage = checkInGameStatus(fs, participants, riotMatch);
+    if (!sendMessage) return;
 
-        changeRiotMatchCheckerInGameStatus(fs, lolName, inGame);
-    }
+    const playerRankList = await getPlayerRanks(participants, region);
 
-    const champions = await getChampions();
-
-    const playerRankedList = await Promise.all(
-        participants.map(
-            async ({ summonerId, summonerName, teamId, championId }) => {
-                let playerRank = "unranked";
-
-                const summonerRankedResult = await sendLoLAPIRequest(
-                    `league/v4/entries/by-summoner/${summonerId}`,
-                    region
-                );
-
-                summonerRankedResult.forEach((result) => {
-                    if (result.queueType === "RANKED_SOLO_5x5") {
-                        playerRank = `${result.tier} ${result.rank}`;
-                    }
-                });
-
-                return {
-                    summonerName,
-                    playerRank,
-                    teamId,
-                    championName: getChampionNameFromChampionId(
-                        champions,
-                        championId
-                    ),
-                };
-            }
-        )
-    );
-
-    const twoTeams = splitIntoTeams(playerRankedList);
-    const embed = constructEmbed(summonerResult, twoTeams);
+    const twoTeams = splitIntoTeams(playerRankList);
+    const embed = constructEmbed(summoner, twoTeams);
 
     client.users.get(discordId).send(embed);
 };
