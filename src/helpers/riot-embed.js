@@ -1,11 +1,9 @@
-const formatPlayerInfoToString = (teamPlayerList) => {
-    let teamInformation = "";
-    teamPlayerList.forEach((teamPlayer) => {
-        teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.championName} - ${teamPlayer.playerRank}\n\n`;
-    });
-
-    return teamInformation;
-};
+const formatPlayerInfoToString = (teamPlayerList) =>
+    teamPlayerList.reduce(
+        (teamInformation, teamPlayer) =>
+            (teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.championName} - ${teamPlayer.playerRank}\n\n`),
+        ""
+    );
 
 const createTeamColumns = (twoTeams) =>
     twoTeams.map((team, index) => ({
@@ -14,7 +12,7 @@ const createTeamColumns = (twoTeams) =>
         inline: true,
     }));
 
-const constructEmbed = (summoner, twoTeams) => ({
+const constructMatchCronEmbed = (summoner, twoTeams) => ({
     embed: {
         color: 3447003,
         title: `${summoner.name}'s Match`,
@@ -35,15 +33,15 @@ const constructEmbed = (summoner, twoTeams) => ({
 
 const splitIntoTeams = (playerRankList) =>
     playerRankList.reduce(
-        ([teamOne, teamTwo], player) => {
-            return player.teamId === 100
+        ([teamOne, teamTwo], player) =>
+            player.teamId === 100
                 ? [[...teamOne, player], teamTwo]
-                : [teamOne, [...teamTwo, player]];
-        },
+                : [teamOne, [...teamTwo, player]],
         [[], []]
     );
 
 export const matchCronEmbed = (playerRankList, summoner) => {
     const twoTeams = splitIntoTeams(playerRankList);
-    return constructEmbed(summoner, twoTeams);
+
+    return constructMatchCronEmbed(summoner, twoTeams);
 };
