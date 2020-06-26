@@ -46,11 +46,18 @@ export const getPlayerRanks = async (participants, region) => {
                     region
                 );
 
-                summonerRankedResult.forEach((result) => {
-                    if (result.queueType === "RANKED_SOLO_5x5") {
-                        playerRank = `${result.tier} ${result.rank}`;
-                    }
-                });
+                try {
+                    summonerRankedResult.forEach((result) => {
+                        if (result.queueType === "RANKED_SOLO_5x5") {
+                            playerRank = `${result.tier} ${result.rank}`;
+                        }
+                    });
+                } catch (error) {
+                    console.log(
+                        `summonerRankedResult: ${summonerRankedResult}`
+                    );
+                    console.log(`error: ${error}`);
+                }
 
                 return {
                     summonerName,
