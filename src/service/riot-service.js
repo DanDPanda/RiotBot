@@ -54,7 +54,11 @@ export const getPlayerRanks = async (participants, region) => {
                     });
                 } catch (error) {
                     console.log(
-                        `summonerRankedResult: ${summonerRankedResult}`
+                        `summonerRankedResult: ${JSON.stringify(
+                            summonerRankedResult,
+                            null,
+                            4
+                        )}`
                     );
                     console.log(`error: ${error}`);
                 }
