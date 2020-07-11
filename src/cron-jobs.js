@@ -11,7 +11,7 @@ export const cronJobs = (client) => {
         riotMatchList.users.forEach((riotMatch, index) => {
             setTimeout(() => {
                 lolMatchChecker(client, fs, riotMatch);
-            }, 2500 * index);
+            }, 5000 * index);
         });
     });
 };
