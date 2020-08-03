@@ -1,18 +1,62 @@
-const formatPlayerInfoToString = (teamPlayerList) =>
-    teamPlayerList.reduce(
+import { getRankIcon } from "../enums/riot-enums.js";
+
+const getChampion = (team) =>
+    team.reduce(
         (teamInformation, teamPlayer) =>
-            (teamInformation += `${teamPlayer.summonerName}: ${teamPlayer.championName} - ${teamPlayer.playerRank}\n\n`),
+            (teamInformation += `${teamPlayer.championName}\n`),
         ""
     );
 
-const createTeamColumns = (twoTeams) =>
-    twoTeams.map((team, index) => ({
-        name: `Team ${index + 1}`,
-        value: formatPlayerInfoToString(team),
-        inline: true,
-    }));
+const getRanks = (client, team) =>
+    team.reduce(
+        (teamInformation, teamPlayer) =>
+            (teamInformation += `${client.emojis
+                .get(getRankIcon(teamPlayer.playerRank))
+                .toString()} ${teamPlayer.playerRank}\n`),
+        ""
+    );
 
-const constructMatchCronEmbed = (summoner, twoTeams) => ({
+const getPlayers = (team) =>
+    team.reduce(
+        (teamInformation, teamPlayer) =>
+            (teamInformation += `${teamPlayer.summonerName}\n`),
+        ""
+    );
+
+const createTeamColumnss = (client, twoTeams) => [
+    {
+        name: `${client.emojis.get("739932832243253372").toString()} Blue Team`,
+        value: getPlayers(twoTeams[0]),
+        inline: true,
+    },
+    {
+        name: "Ranked/Champion WR",
+        value: getChampion(twoTeams[0]),
+        inline: true,
+    },
+    {
+        name: "Rank",
+        value: getRanks(client, twoTeams[0]),
+        inline: true,
+    },
+    {
+        name: `${client.emojis.get("739932832226345183").toString()} Red Team`,
+        value: getPlayers(twoTeams[1]),
+        inline: true,
+    },
+    {
+        name: "Ranked/Champion WR",
+        value: getChampion(twoTeams[1]),
+        inline: true,
+    },
+    {
+        name: "Rank",
+        value: getRanks(client, twoTeams[1]),
+        inline: true,
+    },
+];
+
+const constructMatchCronEmbed = (client, summoner, twoTeams) => ({
     embed: {
         color: 3447003,
         title: `${summoner.name}'s Match`,
@@ -21,7 +65,7 @@ const constructMatchCronEmbed = (summoner, twoTeams) => ({
             icon_url:
                 "https://vignette.wikia.nocookie.net/leagueoflegends/images/1/12/League_of_Legends_Icon.png/revision/latest?cb=20150402234343",
         },
-        fields: createTeamColumns(twoTeams),
+        fields: createTeamColumnss(client, twoTeams),
         timestamp: new Date(),
         footer: {
             icon_url:
@@ -40,8 +84,10 @@ const splitIntoTeams = (playerRankList) =>
         [[], []]
     );
 
-export const matchCronEmbed = (playerRankList, summoner) => {
+export const matchCronEmbed = (client, playerRankList, summoner) => {
+    console.log("playerRankList :>> ", playerRankList);
+    console.log("summoner :>> ", summoner);
     const twoTeams = splitIntoTeams(playerRankList);
 
-    return constructMatchCronEmbed(summoner, twoTeams);
+    return constructMatchCronEmbed(client, summoner, twoTeams);
 };

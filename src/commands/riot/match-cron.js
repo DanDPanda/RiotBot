@@ -17,7 +17,7 @@ export const lolMatchChecker = async (client, fs, riotMatch) => {
     if (!sendMessage) return;
 
     const playerRankList = await getPlayerRanks(participants, region);
-    const embed = matchCronEmbed(playerRankList, summoner);
+    const embed = matchCronEmbed(client, playerRankList, summoner);
 
     client.users.get(discordId).send(embed);
 };

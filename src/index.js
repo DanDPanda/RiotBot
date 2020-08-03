@@ -27,9 +27,6 @@ client.on("message", async (message) => {
     const commandFunction = commandList[commandName];
 
     if (commandFunction) {
-        const commandMessage = await commandFunction(message, client);
-        if (commandMessage) {
-            message.channel.send(commandMessage);
-        }
+        await commandFunction(message, client);
     }
 });
