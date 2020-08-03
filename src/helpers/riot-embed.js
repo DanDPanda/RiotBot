@@ -25,12 +25,14 @@ const getPlayers = (team) =>
 
 const createTeamColumnss = (client, twoTeams) => [
     {
-        name: `${client.emojis.get("739932832243253372").toString()} Blue Team`,
+        name: `${client.emojis
+            .get("739932832243253372")
+            .toString()} Blue Team  `,
         value: getPlayers(twoTeams[0]),
         inline: true,
     },
     {
-        name: "Champion",
+        name: "Champion  ",
         value: getChampion(twoTeams[0]),
         inline: true,
     },
@@ -40,12 +42,14 @@ const createTeamColumnss = (client, twoTeams) => [
         inline: true,
     },
     {
-        name: `${client.emojis.get("739932832226345183").toString()} Red Team`,
+        name: `${client.emojis
+            .get("739932832226345183")
+            .toString()} Red Team  `,
         value: getPlayers(twoTeams[1]),
         inline: true,
     },
     {
-        name: "Champion",
+        name: "Champion  ",
         value: getChampion(twoTeams[1]),
         inline: true,
     },
