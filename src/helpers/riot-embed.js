@@ -85,8 +85,6 @@ const splitIntoTeams = (playerRankList) =>
     );
 
 export const matchCronEmbed = (client, playerRankList, summoner) => {
-    console.log("playerRankList :>> ", playerRankList);
-    console.log("summoner :>> ", summoner);
     const twoTeams = splitIntoTeams(playerRankList);
 
     return constructMatchCronEmbed(client, summoner, twoTeams);
