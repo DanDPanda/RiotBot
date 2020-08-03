@@ -30,7 +30,7 @@ const createTeamColumnss = (client, twoTeams) => [
         inline: true,
     },
     {
-        name: "Ranked/Champion WR",
+        name: "Champion",
         value: getChampion(twoTeams[0]),
         inline: true,
     },
@@ -45,7 +45,7 @@ const createTeamColumnss = (client, twoTeams) => [
         inline: true,
     },
     {
-        name: "Ranked/Champion WR",
+        name: "Champion",
         value: getChampion(twoTeams[1]),
         inline: true,
     },

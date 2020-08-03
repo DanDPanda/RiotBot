@@ -11,7 +11,6 @@ const ranks = {
 };
 
 export const getRankIcon = (playerRank) => {
-    console.log("playerRank :>> ", playerRank);
     if (playerRank.includes("IRON")) return ranks.IRON;
     else if (playerRank.includes("BRONZE")) return ranks.BRONZE;
     else if (playerRank.includes("SILVER")) return ranks.SILVER;
