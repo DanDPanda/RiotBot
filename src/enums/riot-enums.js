@@ -11,13 +11,22 @@ const ranks = {
 };
 
 const mastery = {
-    mastery1: "729400923905851470",
-    mastery2: "729400923926823042",
-    mastery3: "729400923754856639",
-    mastery4: "729400923390083104",
-    mastery5: "729400923490615307",
-    mastery6: "729400923574501437",
-    mastery7: "729400923792736327",
+    1: "729400923905851470",
+    2: "729400923926823042",
+    3: "729400923754856639",
+    4: "729400923390083104",
+    5: "729400923490615307",
+    6: "729400923574501437",
+    7: "729400923792736327",
+};
+
+const summonerSpells = {
+    4: "740224282231308319",
+    7: "740224282298417283",
+    21: "740224282231046185",
+    12: "740224281992232971",
+    11: "740224282121994251",
+    14: "740224282075987989",
 };
 
 export const getRankIcon = (playerRank) => {
@@ -32,14 +41,10 @@ export const getRankIcon = (playerRank) => {
     return ranks.UNRANKED;
 };
 
-export const getChampionMasteryIcon = (championLevel) => {
-    console.log("championLevel :>> ", championLevel);
-    if (championLevel === 1) return mastery.mastery1;
-    else if (championLevel === 2) return mastery.mastery2;
-    else if (championLevel === 3) return mastery.mastery3;
-    else if (championLevel === 4) return mastery.mastery4;
-    else if (championLevel === 5) return mastery.mastery5;
-    else if (championLevel === 6) return mastery.mastery6;
-    else if (championLevel === 7) return mastery.mastery7;
-    return "729402529229832212";
-};
+export const getChampionMasteryIcon = (championLevel) =>
+    mastery[championLevel] ? mastery[championLevel] : "729402529229832212";
+
+export const getSummonerSpellIcon = (summonerSpellId) =>
+    summonerSpells[summonerSpellId]
+        ? summonerSpells[summonerSpellId]
+        : "729402529229832212";

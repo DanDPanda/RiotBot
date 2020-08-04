@@ -45,7 +45,14 @@ export const getPlayerRanks = async (participants, region) => {
 
     return await Promise.all(
         participants.map(
-            async ({ summonerId, summonerName, teamId, championId }) => {
+            async ({
+                summonerId,
+                summonerName,
+                teamId,
+                championId,
+                spell1Id,
+                spell2Id,
+            }) => {
                 let playerRank = "unranked";
 
                 const summonerRankedResult = await selectPlayerRanks(
@@ -80,6 +87,8 @@ export const getPlayerRanks = async (participants, region) => {
                     summonerName,
                     playerRank,
                     teamId,
+                    spell1Id,
+                    spell2Id,
                     championLevel,
                     championName: getChampionNameFromChampionId(
                         champions,
