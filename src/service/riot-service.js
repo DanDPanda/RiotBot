@@ -4,6 +4,7 @@ import {
     selectSummoner,
     selectActiveGame,
     selectPlayerRanks,
+    selectPlayerChampionMastery,
 } from "../repository/riot-repository.js";
 
 export const getSummonerBySummonerName = (lolName, region) =>
@@ -11,6 +12,12 @@ export const getSummonerBySummonerName = (lolName, region) =>
 
 export const getActiveGameBySummonerId = (summoner, region) =>
     selectActiveGame(summoner, region);
+
+export const getChampionRankBySummonerIdAndChampionId = (
+    summonerId,
+    championId,
+    region
+) => selectPlayerChampionMastery(summonerId, championId, region);
 
 export const checkInGameStatus = (fs, participants, { lolName, inGame }) => {
     if (!participants) {
@@ -46,6 +53,12 @@ export const getPlayerRanks = async (participants, region) => {
                     region
                 );
 
+                const { championLevel } = await selectPlayerChampionMastery(
+                    summonerId,
+                    championId,
+                    region
+                );
+
                 try {
                     summonerRankedResult.forEach((result) => {
                         if (result.queueType === "RANKED_SOLO_5x5") {
@@ -67,6 +80,7 @@ export const getPlayerRanks = async (participants, region) => {
                     summonerName,
                     playerRank,
                     teamId,
+                    championLevel,
                     championName: getChampionNameFromChampionId(
                         champions,
                         championId

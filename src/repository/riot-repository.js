@@ -25,9 +25,15 @@ export const selectActiveGame = ({ id }, region) =>
 export const selectPlayerRanks = (id, region) =>
     sendLoLAPIRequest(`league/v4/entries/by-summoner/${id}`, region);
 
+export const selectPlayerChampionMastery = (id, championId, region) =>
+    sendLoLAPIRequest(
+        `champion-mastery/v4/champion-masteries/by-summoner/${id}/by-champion/${championId}`,
+        region
+    );
+
 export const getChampions = async () => {
     const response = await fetch(
-        "http://ddragon.leagueoflegends.com/cdn/10.6.1/data/en_US/champion.json"
+        "http://ddragon.leagueoflegends.com/cdn/10.15.1/data/en_US/champion.json"
     );
 
     const json = await response.json();

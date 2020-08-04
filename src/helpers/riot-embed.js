@@ -1,9 +1,11 @@
-import { getRankIcon } from "../enums/riot-enums.js";
+import { getRankIcon, getChampionMasteryIcon } from "../enums/riot-enums.js";
 
-const getChampion = (team) =>
+const getChampion = (client, team) =>
     team.reduce(
         (teamInformation, teamPlayer) =>
-            (teamInformation += `${teamPlayer.championName}\n`),
+            (teamInformation += `${client.emojis
+                .get(getChampionMasteryIcon(teamPlayer.championLevel))
+                .toString()} ${teamPlayer.championName}\n`),
         ""
     );
 
@@ -33,7 +35,7 @@ const createTeamColumnss = (client, twoTeams) => [
     },
     {
         name: "Champion  ",
-        value: getChampion(twoTeams[0]),
+        value: getChampion(client, twoTeams[0]),
         inline: true,
     },
     {
@@ -50,7 +52,7 @@ const createTeamColumnss = (client, twoTeams) => [
     },
     {
         name: "Champion  ",
-        value: getChampion(twoTeams[1]),
+        value: getChampion(client, twoTeams[1]),
         inline: true,
     },
     {
