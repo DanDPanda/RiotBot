@@ -3,17 +3,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const sendLoLAPIRequest = async (url, region = "na1") => {
-    const response = await fetch(
-        `https://${region}.api.riotgames.com/lol/${url}`,
-        {
-            method: "get",
-            headers: {
-                "X-Riot-Token": process.env.RIOT_API_KEY,
-            },
-        }
-    );
-    const json = await response.json();
-    return json;
+    setTimeout(() => {
+        const response = await fetch(
+            `https://${region}.api.riotgames.com/lol/${url}`,
+            {
+                method: "get",
+                headers: {
+                    "X-Riot-Token": process.env.RIOT_API_KEY,
+                },
+            }
+        );
+        const json = await response.json();
+
+        return json;
+    }, 1000)
 };
 
 export const selectSummoner = (lolName, region) =>
