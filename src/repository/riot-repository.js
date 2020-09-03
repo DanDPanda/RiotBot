@@ -1,22 +1,21 @@
 import fetch from "node-fetch";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 const sendLoLAPIRequest = async (url, region = "na1") => {
-    setTimeout(() => {
-        const response = await fetch(
-            `https://${region}.api.riotgames.com/lol/${url}`,
-            {
-                method: "get",
-                headers: {
-                    "X-Riot-Token": process.env.RIOT_API_KEY,
-                },
-            }
-        );
-        const json = await response.json();
+    const response = await fetch(
+        `https://${region}.api.riotgames.com/lol/${url}`,
+        {
+            method: "get",
+            headers: {
+                "X-Riot-Token": process.env.RIOT_API_KEY,
+            },
+        }
+    );
+    const json = await response.json();
 
-        return json;
-    }, 1000)
+    return json;
 };
 
 export const selectSummoner = (lolName, region) =>
